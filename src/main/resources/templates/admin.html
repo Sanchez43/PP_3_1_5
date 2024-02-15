@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+    <meta id="csrfHeader" data-th-content="${_csrf.headerName}">
+    <meta id="csrfToken" data-th-content="${_csrf.token}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<header class="container-fluid bg-dark d-flex justify-content-between">
+    <div id="headerData" class="text-white fs-1 my-sm-auto">
+        Loading user data...
+    </div>
+    <a class="btn btn-link btn-lg text-secondary" href="/logout">Logout</a>
+</header>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 vh-100 px-sm-0">
+            <div class="nav flex-column nav-pills mt-sm-3" id="nav-tab" role="pageList" aria-orientation="vertical">
+                <a class="nav-link btn-lg py-sm-2 active" id="admin-tab" data-toggle="pill" href="#adminPage" role="tab" aria-controls="adminPage" aria-selected="true">Admin</a>
+                <a class="nav-link btn-lg py-sm-3" id="user-tab" data-toggle="pill" href="#userPage" role="tab" aria-controls="userPage" aria-selected="false">User</a>
+            </div>
+        </div>
+        <div class="col-10 bg-light vh-100 px-sm-4">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="adminPage" role="tabpanel" aria-labelledby="adminPage-tab">
+                    <h1 class="mt-sm-3">Admin panel</h1>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="table" data-toggle="tab" href="#usersTable" role="tab" aria-controls="table" aria-selected="true">Users table</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="create" data-toggle="tab" href="#newUser" role="tab" aria-controls="create" aria-selected="false">New User</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="usersTable" role="tabpanel" aria-labelledby="table-tab">
+                            <h5 class="px-sm-3 py-sm-3 border mb-sm-0 rounded-top">All users</h5>
+                            <div class="py-sm-3 px-sm-3 bg-white border border-top-0 rounded-bottom">
+                                <table class="table bg-white table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">First Name</th>
+                                        <th scope="col">Last Name</th>
+                                        <th scope="col">Age</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Role</th>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="adminTableBody"></tbody>
+                                </table>
+
+                                <!-- editModal -->
+                                <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit user</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="editForm">
+                                                <div class="modal-body w-50 mx-auto text-center">
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="editID">ID</label>
+                                                        <input type="number" class="form-control" id="editID" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="editName">First Name</label>
+                                                        <input type="text" class="form-control" id="editName" name="edit_name" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="editLastName">Last Name</label>
+                                                        <input type="text" class="form-control" id="editLastName" name="edit_lastName" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="editAge">Age</label>
+                                                        <input type="number" class="form-control" id="editAge" name="edit_age" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="editUsername">Username</label>
+                                                        <input type="text" class="form-control" id="editUsername" name="edit_username" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="editPassword">Password</label>
+                                                        <input type="password" class="form-control" id="editPassword" name="edit_password" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="editRoleSelect">Role</label>
+                                                        <select multiple class="form-control" id="editRoleSelect" name="selectedRoles" size="2">
+                                                            <option name="editOptions" value="ADMIN">ADMIN</option>
+                                                            <option name="editOptions" value="USER">USER</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" id="editBtn" class="btn btn-primary">Edit</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- deleteModal -->
+                                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel2">Delete user</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body w-50 mx-auto text-center">
+                                                <form id="deleteForm">
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="delID">ID</label>
+                                                        <input type="number" class="form-control" id="delID" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="delName">First Name</label>
+                                                        <input type="text" class="form-control" id="delName" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="delLastName">Last Name</label>
+                                                        <input type="text" class="form-control" id="delLastName" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="delAge">Age</label>
+                                                        <input type="number" class="form-control" id="delAge" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="delUsername">Username</label>
+                                                        <input type="text" class="form-control" id="delUsername" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="font-weight-bold" for="deleteRoleSelect">Role</label>
+                                                        <select multiple class="form-control" id="deleteRoleSelect" name="selectedRoles" size="2" disabled>
+                                                            <option name="deleteOptions" value="ADMIN">ADMIN</option>
+                                                            <option name="deleteOptions" value="USER">USER</option>
+                                                        </select>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" id="deleteBtn" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="newUser" role="tabpanel" aria-labelledby="create-tab">
+                            <h5 class="px-sm-3 py-sm-2 border mb-sm-0 rounded-top">Add new user</h5>
+                            <div class="py-sm-3 px-sm-3 bg-white border border-top-0 rounded-bottom">
+                                <div class="w-25 mx-auto text-center">
+                                    <form>
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="createName">First Name</label>
+                                            <input type="text" class="form-control" id="createName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="createLastName">Last Name</label>
+                                            <input type="text" class="form-control" id="createLastName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="createAge">Age</label>
+                                            <input type="number" class="form-control" id="createAge" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="createUsername">Username</label>
+                                            <input type="text" class="form-control" id="createUsername" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="createPassword">Password</label>
+                                            <input type="password" class="form-control" id="createPassword" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="font-weight-bold" for="createRoleSelect">Role</label>
+                                            <select multiple class="form-control" id="createRoleSelect" name="selectedRoles" size="2">
+                                                <option name="createOptions" value="ADMIN">ADMIN</option>
+                                                <option name="createOptions" value="USER">USER</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" id="createBtn" class="btn btn-success">Add new user</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="userPage" role="tabpanel" aria-labelledby="userPage-tab">
+                    <h1 class="mt-sm-3">User information-page</h1>
+                    <h5 class="px-sm-3 py-sm-3 border mb-sm-0 rounded-top">About user</h5>
+                    <div class="py-sm-3 px-sm-3 bg-white border border-top-0 rounded-bottom">
+                        <table class="table bg-white">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                            </thead>
+                            <tbody id="userTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/admin.js"></script>
+</body>
+</html>
