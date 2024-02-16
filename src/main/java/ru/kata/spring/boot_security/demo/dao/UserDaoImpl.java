@@ -26,12 +26,6 @@ public class UserDaoImpl implements UserDao {
         em.persist(user);
     }
 
-    @Override
-    public Role getRoleByName(String roleName) {
-        String jpql = "SELECT r FROM Role r WHERE r.name = :roleName";
-        return em.createQuery(jpql, Role.class).setParameter("roleName", roleName)
-                .getSingleResult();
-    }
 
     @Override
     public User getUserById(Long id) {
